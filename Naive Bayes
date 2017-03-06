@@ -1,0 +1,55 @@
+
+#sudo pip install naiveBayesClassifier
+from naiveBayesClassifier import tokenizer
+from naiveBayesClassifier.trainer import Trainer
+from naiveBayesClassifier.classifier import Classifier
+
+#input Data set
+trainingSet='/home/training.txt'
+with open(trainingSet) as f:
+    next(f)
+    listOfClasses = []
+    for line in f:
+        print line
+        dict = {}
+        dict['text'] = line[2:]
+        dict['category']=line[0]
+        listOfClasses.append(dict)
+    print(listOfClasses)
+
+#Breaking into words for frequency 
+classTrainer = Trainer(tokenizer)
+
+
+classSet=listOfClasses
+for class1 in classSet:
+    classTrainer.train(class1['text'], class1['category'])
+
+# a classifier.
+myClassifier = Classifier(classTrainer.data, tokenizer)
+# test words of classifier "2"
+#TODO Feed documents
+
+classification2 = myClassifier.classify("allied lyons sees no change in hiram walker stake allied")
+
+classification6 = myClassifier.classify("its dlr a barrel price target he told reporters at an energy conference in jakarta that opec had decided")
+# the classification variable holds the probablity of seeing the the set of tokens
+print("should be from class 2 ")
+print(classification2[0])
+print("---------------------------------------------------")
+print("should be from class 6 ")
+print(classification6[0])
+################## output
+#>>> classification2 = myClassifier.classify("allied lyons sees no change in hiram walker stake allied")
+#>>> 
+#>>> classification7 = myClassifier.classify("its dlr a barrel price target he told reporters at an energy conference in jakarta that opec had decided")
+#>>> print("should be from class 2 ")
+#should be from class 2 
+#>>> print(classification2[0])
+#('2', 8.132884358813221e-14)
+#>>> print("---------------------------------------------------")
+#---------------------------------------------------
+#>>> print("should be from class 6 ")
+#should be from class 6 
+#>>> print(classification6[0])
+#('6', 7.624673694710756e-06)
