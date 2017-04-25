@@ -13,9 +13,28 @@ def bestFitSlopeAndIntercept(xs,ys):
     b=mean(ys)-m*mean(xs)
     return m,b
 
+
+def squaredError(y_orig,ys_line):
+    return sum((ys_line-y_orig)**2)
+
+def coefficientOfDetermination(y_orig,ys_line):
+    y_mean_line=[mean(y_orig) for y in y_orig]
+    squaredErrorRegre=squaredError(y_orig,ys_line)
+    squaredErrorMean=squaredError(y_orig,y_mean_line)
+    return 1-(squaredErrorRegre/squaredErrorMean)
+
+
+
+
+
 m,b=bestFitSlopeAndIntercept(xs,ys)
 print(m,b)
 regressionLine=[m*x+b for x in xs]
+
+#co-efficient of determination
+rSquare=coefficientOfDetermination(ys,regressionLine)
+
+print(rSquare)
 
 predict_x=8
 predict_y=(m*predict_x+b)
