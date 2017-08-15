@@ -25,6 +25,6 @@ print("correct dates - ",date)
 
 ########################################Output###########################################
 
-#/usr/bin/python3.6 /home/sukumar/PycharmProjects/NLP/regExForBetterNLP.py
+#/usr/bin/python3.6 /home/sukumar/PycharmProjects/NLP/Assignment2.py
 #correct dates -  [['16/11/2016', '16.11.2016', '16-11-2016'], ['15 November 1989', '  October 2016', '28 February 2011'], ['2016-11-16']]
 #Process finished with exit code 0
