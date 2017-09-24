@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+			  integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+			  crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        $(function(){
+	$('#getData').click(function(){
+		$.ajax({
+			url: '/lotsOfData',
+			type: 'GET',
+			success: function(response){
+				console.log(response);
+				alert(response)
+			},
+			error: function(error){
+				console.log(error);
+			}
+		});
+	});
+});
+
+    </script>
+
+</head>
+<body>
+
+{% if name  %}
+
+
+<h1>Hello , {{name}}</h1>
+{%else %}
+
+<h1>Hello , BatMan this is not Gotham</h1>
+
+
+{% endif %}
+
+
+<button id="getData">Get Data</button>
+</body>
+</html>

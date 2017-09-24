@@ -1,0 +1,346 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Python Flask Bucket List App</title>
+
+  
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+    <link href="../static/css/signup.css" rel="stylesheet">
+    <script src="../static/js/jquery-1.11.2.js"></script>
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.js"></script>
+ <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+ <style>
+	.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+    </style>
+	<script src="../static/js/jquery.ui.widget.js"></script>
+
+	    
+        <script>
+
+	</script>
+ <script>
+	$(function(){
+		
+		GetMovies(1);
+		$('#btnUpdate').click(function(){
+			$.ajax({
+			url : '/updateMovie',
+			data : {name:$('#editName').val(),time:$('#editTime').val(),location:$('#editLocation').val(),id:$('#editId').val()},
+			type : 'POST',
+			success: function(res){
+			$('#editModal').modal('hide');
+				GetMovies(1);
+			},
+			error: function(error){
+				console.log(error);
+			}
+		});
+		});
+
+		$('document').on('click','.navigation li a',function(){
+			console.log('me in');
+		});
+	});
+
+	function GetMovies(_page){
+		
+		var _offset = (_page - 1) * 5;
+		$.ajax({
+			url : '/getMoviesUpdateDelete',
+			type : 'POST',
+			data : {offset:_offset},
+			success: function(res){
+				var itemsPerPage = 5;
+				var wishObj = JSON.parse(res);
+				
+				$('#ulist').empty();
+				$('#listTemplate').tmpl(wishObj[0]).appendTo('#ulist');
+
+				var total = wishObj[1]['total'];
+				var pageCount = total/itemsPerPage;
+				var pageRem = total%itemsPerPage;
+				if(pageRem !=0 ){
+					pageCount = Math.floor(pageCount)+1;
+				}
+			
+
+				$('.pagination').empty();
+
+ 				var pageStart = $('#hdnStart').val();
+				var pageEnd = $('#hdnEnd').val();
+
+				
+				
+
+				if(pageStart>5){
+					var aPrev = $('<a/>').attr({'href':'#'},{'aria-label':'Previous'})
+				.append($('<span/>').attr('aria-hidden','true').html('&laquo;'));
+
+				$(aPrev).click(function(){
+					$('#hdnStart').val(Number(pageStart) - 5);
+					$('#hdnEnd').val(Number(pageStart) - 5 + 4);
+					GetWishes(Number(pageStart) - 5);
+				});
+
+				var prevLink = $('<li/>').append(aPrev);
+				$('.pagination').append(prevLink);
+				}
+				
+				
+				
+				for(var i=Number(pageStart);i<=Number(pageEnd);i++){
+					
+					if (i > pageCount){
+						break;
+					}
+
+					
+					var aPage = $('<a/>').attr('href','#').text(i);
+					
+					$(aPage).click(function(i){
+						return function(){
+							GetMovies(i);
+						}
+					}(i));
+					var page = $('<li/>').append(aPage);
+
+					if((_page)==i){
+						$(page).attr('class','active');
+					}
+					
+					$('.pagination').append(page);
+					
+					
+				}
+				if ((Number(pageStart) + 5) <= pageCount){
+					var nextLink = $('<li/>').append($('<a/>').attr({'href':'#'},{'aria-label':'Next'})
+					.append($('<span/>').attr('aria-hidden','true').html('&raquo;').click(function(){
+							$('#hdnStart').val(Number(pageStart) + 5);
+							$('#hdnEnd').val(Number(pageStart) + 5 + 4);
+							GetWishes(Number(pageStart) + 5);
+						
+					})));
+					$('.pagination').append(nextLink);
+				}
+
+				
+			},
+			error: function(error){
+				console.log(error);
+			}
+		});
+	}
+
+	function ConfirmDelete(elem){
+		localStorage.setItem('deleteId',$(elem).attr('data-id'));
+		$('#deleteModal').modal();
+	}
+
+	function Delete(){
+		$.ajax({
+			url : '/deleteMovie',
+			data : {id:localStorage.getItem('deleteId')},
+			type : 'POST',
+			success: function(res){
+				var result = JSON.parse(res);
+				if(result.status == 'OK'){
+					$('#deleteModal').modal('hide');
+					GetMovies();
+				}
+				else{
+					alert(result.status);	
+				}
+			},
+			error: function(error){
+				console.log(error);
+			}
+		});
+	}
+
+	function Edit(elm){
+	    alert("edit");
+		localStorage.setItem('editId',$(elm).attr('data-id'));
+		$.ajax({
+			url : '/getMovieById',
+			data : {id:$(elm).attr('data-id')},
+			type : 'POST',
+			success: function(res){
+				
+				var data = JSON.parse(res);
+				console.log(data);
+				$('#editId').val(data[0]['Id']);
+				$('#editName').val(data[0]['Name']);
+				$('#editTime').val(data[0]['Time']);
+				$('#editLocation').val(data[0]['Location']);
+				$('#editModal').modal();
+
+				
+			},
+			error: function(error){
+				console.log(error);
+			}
+		});
+	}
+    </script>
+    
+   <style>
+     .trash { color:rgb(209, 91, 71); }
+
+
+
+
+.panel-body .checkbox { display:inline-block;margin:0px; }
+
+
+.list-group { margin-bottom:0px; }
+   </style>
+   
+  </head>
+
+  <body>
+
+    <div class="container">
+      <div class="header">
+        <nav>
+             <ul class="nav nav-pills pull-right">
+	    <li role="presentation" ><a href="/showDashboard">All Movies</a></li>
+	    <li role="presentation" ><a href="/showAddMovie">Add Movie</a></li>
+            <li role="presentation" class="active"><a href="/movieUpdateDelete">Update/Delete Movie</a></li>
+          </ul>
+
+      </div>
+
+     
+        <script id="listTemplate" type="text/x-jQuery-tmpl">
+       <li class="list-group-item">
+                            <div class="checkbox">
+                                <label>
+                                    ${Title}
+                                </label>
+                            </div>
+                            <div class="pull-right action-buttons">
+                                <a data-id=${Id} onclick="Edit(this)" ><span class="glyphicon glyphicon-pencil"></span></a>
+                               <a data-id=${Id} onclick="ConfirmDelete(this)" ><span class="glyphicon glyphicon-trash"></span></a>
+                            </div>
+                        </li>
+    </script>
+
+    
+	
+	<div class="well">
+    <div class="row">
+        <div class="col-md-12">
+            
+                <div class="panel-body">
+
+                    <ul id="ulist" class="list-group">
+                        
+ 
+                        
+                    </ul>
+		    <nav>
+  <ul class="pagination">
+    
+  </ul>
+</nav>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+ <footer class="footer">
+        <p>&copy; Company 2015</p>
+      </footer>
+</div>
+
+
+
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="editModalLabel">Update Movie</h4>
+      </div>
+      <div class="modal-body">
+        <form role="form">
+            <input type="hidden" class="form-control" id="editId">
+
+          <div class="form-group">
+            <label for="editName" class="control-label">Movie Name:</label>
+            <input type="text" class="form-control" id="editName">
+          </div>
+          <div class="form-group">
+            <label for="editTime" class="control-label">Movie Time:</label>
+            <textarea class="form-control" id="editTime"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="editLocation" class="control-label">Movie Location:</label>
+            <textarea class="form-control" id="editLocation"></textarea>
+          </div>
+
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button id="btnUpdate" type="button" class="btn btn-primary">Update</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+       <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" style="text-align:center;">
+        <h4 class="modal-title" style="color:red;" id="deleteModalLabel">You are going to Delete this forever !!</h4>
+      </div>
+     
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="Delete()">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+     
+<input type="hidden" id="hdnStart" value="1" />
+<input type="hidden" id="hdnEnd" value="5"/>
+      
+
+     
+
+    </div>
+
+
+  </body>
+</html>
+

@@ -1,0 +1,37 @@
+mysql> create database moviebuzz;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> create table MovieMaster.root( movie_id VARCHAR(32) NULL,
+    -> movie_name VARCHAR(150) NULL,
+    -> movie_timing DATE NULL,
+    -> movie_location VARCHAR(120) NULL);
+ERROR 1049 (42000): Unknown database 'MovieMaster'
+mysql> create table moviebuzz.movie_master( movie_id VARCHAR(32) NULL, movie_name VARCHAR(150) NULL, movie_timing DATE NULL, movie_location VARCHAR(120) NULL);
+Query OK, 0 rows affected (0.45 sec)
+
+mysql>
+
+
+mysql> INSERT INTO moviebuzz.movie_master(movie_id, movie_name, movie_timing ) VALUES ('AEEFEF12233','Batman vs Superman', '2015-11-05 14:29:36');
+Query OK, 1 row affected, 1 warning (0.08 sec)
+
+
+
+mysql> ALTER table moviebuzz.movie_master add inserted_date DATE;
+Query OK, 0 rows affected (0.97 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+
+
+ UPDATE moviebuzz.movie_master SET inserted_date='2017-09-24 12:36:00';
+Query OK, 1 row affected, 1 warning (0.06 sec)
+Rows matched: 1  Changed: 1  Warnings: 1
+
+
+
+UPDATE moviebuzz.movie_master SET  movie_name=' Batman vs SuperMan', movie_timing='2017-09-24 12:36:00' , movie_location='Bhayandar' where movie_id= 'AEEFEF12233' ;
+
+
+
+
+INSERT INTO moviebuzz.movie_master(movie_id, movie_name, movie_timing, inserted_date, added_by ) VALUES ('AEEFEF12234','Batman vs Superman', '2015-11-05 14:29:36',now(), sushant);

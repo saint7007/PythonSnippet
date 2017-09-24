@@ -1,0 +1,136 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Python Flask Bucket List App</title>
+
+   
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+    
+    <script src="../static/js/jquery-1.11.2.js"></script>
+
+	<script src="../static/js/jquery.ui.widget.js"></script>
+
+
+	    
+        <script>
+
+
+$(function(){
+	$('#singlebutton').click(function(){
+	   var title=$("#txtTitle").val();
+	   var timing=$("#txtTiming").val();
+	   var location=$("#txtLocation").val();
+
+		$.ajax({
+			url: '/addMovie/'+title+'/'+timing+'/'+location,
+			type: 'GET',
+			success: function(response){
+				console.log(response);
+				window.location.href="/showDashboard";
+			},
+			error: function(error){
+				console.log(error);
+			}
+		});
+	});
+});
+
+	</script>
+
+    <style>
+	.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+    </style>
+   
+  </head>
+
+  <body>
+
+    <div class="container">
+      <div class="header">
+        <div class="header">
+        <nav>
+          <ul class="nav nav-pills pull-right">
+	    <li role="presentation" ><a href="/showDashboard">All Movies</a></li>
+	    <li role="presentation" class="active"><a href="/showAddMovie">Add Movie</a></li>
+            <li role="presentation" ><a href="/movieUpdateDelete">Update/Delete Movie</a></li>
+          </ul>
+        </nav>
+      </div>
+
+
+     
+
+	<div class="well">
+      <form role="form">
+
+
+<!-- Form Name -->
+<legend>Add Movie</legend>
+
+<!-- Text input-->
+<div class="form-group">
+  <label  for="txtTitle">Movie Name</label>
+  
+  <input id="txtTitle" name="inputTitle" type="text" placeholder="Movie Title..." class="form-control input-md">
+  
+</div>
+
+<!-- Textarea -->
+<div class="form-group">
+  <label for="txtTiming">Movie Timing</label>
+                     
+    <input id="txtTiming" name="inputTiming" type="text" placeholder="Movie Timing..." class="form-control input-md">
+
+</div>
+
+
+          <div class="form-group">
+  <label for="txtLocation">Movie Location</label>
+
+    <input id="txtLocation" name="inputLocation" type="text" placeholder="Movie Location..." class="form-control input-md">
+
+</div>
+          <div class="form-group">
+  
+    <p class="text-center">
+    <input id="singlebutton" name="singlebutton" class="btn btn-primary" type="button" value="Add Movie!!!" />
+  	</p>
+</div>
+
+
+</form>
+
+</div>
+
+
+      
+
+      <footer class="footer">
+        <p>&copy; Company 2017</p>
+      </footer>
+
+    </div>
+  </body>
+</html>
+
