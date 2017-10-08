@@ -63,3 +63,10 @@ print(y_pred_entropy)
 print("Ginni Accuracy ", accuracy_score(y_test,y_pred))
 
 print("Entropy Accuracy  ", accuracy_score(y_test,y_pred_entropy))
+
+
+
+# run from terminal
+# 1 1 1 1 1 0]
+#Ginni Accuracy  0.912280701754
+#Entropy Accuracy   0.938596491228
